@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, OneToOne} from 'typeorm';
+import PublicFile from './publicImage.entity';
 
 @Entity('initialImage')
 export class InitialImageEntity {  
@@ -8,5 +9,12 @@ export class InitialImageEntity {
         type: 'varchar',  
         unique: true 
     }) 
-    descriptions: string;
+    description: string;
+    @JoinColumn()
+    @OneToOne(
+    () => PublicFile,
+    {
+      eager: true,
+    })
+    public image?: PublicFile;
 }
