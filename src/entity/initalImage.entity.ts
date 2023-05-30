@@ -8,5 +8,5 @@ export class InitialImageEntity {
         type: 'varchar',  
         unique: true 
     }) 
-    description: string;
+    descriptions: string;
 }
