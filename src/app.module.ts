@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import * as Joi from '@hapi/joi'
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import * as Joi from '@hapi/joi'
         AWS_PUBLIC_BUCKET_NAME: Joi.string().required(),
       })
     }),
+    DatabaseModule
   ],
   controllers: [],
   providers: [],
