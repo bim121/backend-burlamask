@@ -39,7 +39,14 @@ export class InitialImageService {
         });
         await this.initialImageRepo.save(initialImageObject);
 
-        return initialImageObject;  
+        return await this.initialImageRepo.findOne({
+            where: {
+                description
+            },
+            relations: {
+                image: true,
+            },
+        }) 
     }
 
     async getAll(): Promise<InitialImageEntity[]> {
