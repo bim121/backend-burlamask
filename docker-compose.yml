@@ -12,12 +12,14 @@ services:
       - .:/app
       - /app/node_modules
     ports:
-      - 5000:5000
+      - 5001:5001
       - 9229:9229
     command: npm run start:dev
     depends_on:
       - postgres
       - rabbitmq
+    networks:
+      - myback
     restart: always
   rabbitmq:
     image: rabbitmq:3-management
@@ -27,6 +29,8 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    networks:
+      - myback
   postgres:
     container_name: postgres
     image: postgres:12
@@ -39,6 +43,20 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
     restart: always
+    networks:
+      - myback
+  flask:
+    build:
+      context: ../../CV/burlamask_cv
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    networks:
+      - myback
 
 volumes:
   pgdata:
+
+networks:
+  myback:
+    driver: bridge

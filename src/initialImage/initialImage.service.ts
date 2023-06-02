@@ -34,7 +34,7 @@ export class InitialImageService {
         console.log(image.url);
 
         await this.initialImageRepo.update(initialImageObject, {
-            ...map,
+            ...initialImageObject,
             image
         });
         await this.initialImageRepo.save(initialImageObject);

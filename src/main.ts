@@ -2,10 +2,11 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { ConfigService } from "@nestjs/config";
 import { config } from "aws-sdk";
+import { createProxyMiddleware } from 'http-proxy-middleware';
 
 const start = async() => {
   try{
-      const PORT = process.env.PORT || 5000;
+      const PORT = process.env.PORT || 5001;
       const app = await NestFactory.create(AppModule);
 
       const configService = app.get(ConfigService);

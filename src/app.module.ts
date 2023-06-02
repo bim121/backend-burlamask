@@ -4,6 +4,7 @@ import * as Joi from '@hapi/joi'
 import { DatabaseModule } from './database/database.module';
 import { FilesModule } from './file/file.module';
 import { InitialImageModule } from './initialImage/initialImage.module';
+import { ChangedImageModule } from './changedImage/changedImage.module';
 
 @Module({
   imports: [
@@ -31,7 +32,8 @@ import { InitialImageModule } from './initialImage/initialImage.module';
     }),
     DatabaseModule,
     FilesModule,
-    InitialImageModule
+    InitialImageModule,
+    ChangedImageModule
   ],
   controllers: [],
   providers: [],
