@@ -5,6 +5,7 @@ import { DatabaseModule } from './database/database.module';
 import { FilesModule } from './file/file.module';
 import { InitialImageModule } from './initialImage/initialImage.module';
 import { ChangedImageModule } from './changedImage/changedImage.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -28,12 +29,16 @@ import { ChangedImageModule } from './changedImage/changedImage.module';
         RABBITMQ_PASSWORD: Joi.string().required(),
         RABBITMQ_HOST: Joi.string().required(),
         RABBITMQ_QUEUE_NAME: Joi.string().required(),
+        ELASTICSEARCH_NODE: Joi.string().required(),
+        ELASTICSEARCH_USERNAME: Joi.string().required(),
+        ELASTICSEARCH_PASSWORD: Joi.string().required()
       })
     }),
     DatabaseModule,
     FilesModule,
     InitialImageModule,
-    ChangedImageModule
+    ChangedImageModule,
+    SearchModule 
   ],
   controllers: [],
   providers: [],

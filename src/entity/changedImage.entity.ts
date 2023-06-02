@@ -7,7 +7,7 @@ export class ChangedImageEntity {
     id: number;
     @Column({ 
         type: 'varchar',  
-        unique: true 
+        unique: false 
     }) 
     description: string;
     @JoinColumn()

@@ -1,10 +1,11 @@
 import { Injectable, Inject, HttpException, HttpStatus } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { ClientProxy } from "@nestjs/microservices";
 import { ChangedImageEntity } from "src/entity/changedImage.entity";
 import { HttpService } from '@nestjs/axios';
 import { CreateChangeImageDto } from '../dto/changedImage-dto';
+import ChangedImageSearchService from "./changedImageSearch.service";
 
 @Injectable()
 export class ChangedImageService {
@@ -12,15 +13,18 @@ export class ChangedImageService {
         @InjectRepository(ChangedImageEntity)    
         private readonly changedImageRepo: Repository<ChangedImageEntity>,
         @Inject('FILES_SERVICE') private filesService: ClientProxy,
-        private readonly httpService: HttpService ) {}
+        private readonly httpService: HttpService,
+        private changedImageSearchService: ChangedImageSearchService ) {}
 
     async createChangedImage(dto: CreateChangeImageDto) {  
         const {descriptionOne, descriptionTwo, faceUrl, bodyUrl} = dto;  
         const requestBody = { face_url: faceUrl, body_url: bodyUrl };
         const firstChangedImageObject: ChangedImageEntity = await this.changedImageRepo.create({ description: descriptionOne });
         await this.changedImageRepo.save(firstChangedImageObject);
+        this.changedImageSearchService.indexPost(firstChangedImageObject);
         const secondChangedImageObject: ChangedImageEntity = await this.changedImageRepo.create({ description: descriptionTwo });
         await this.changedImageRepo.save(secondChangedImageObject);
+        this.changedImageSearchService.indexPost(secondChangedImageObject);
 
         const arr: ChangedImageEntity[] = [];
 
@@ -50,7 +54,7 @@ export class ChangedImageService {
 
         let object = await this.changedImageRepo.findOne({
             where: {
-                description: descriptionOne
+                id: firstChangedImageObject.id
             },
             relations: {
                 image: true,
@@ -80,7 +84,7 @@ export class ChangedImageService {
 
         object = await this.changedImageRepo.findOne({
             where: {
-                description: descriptionTwo
+                id: secondChangedImageObject.id
             },
             relations: {
                 image: true,
@@ -90,6 +94,17 @@ export class ChangedImageService {
         arr.push(object);
 
         return arr;
+    }
+
+    async searchForChangedImage(description: string) {
+        const results = await this.changedImageSearchService.search(description);
+        const ids = results.map(result => result.id);
+        if (!ids.length) {
+            return [];
+        }
+        return this.changedImageRepo.find({
+            where: { id: In(ids) }
+        });
     }
 
     async getAll(): Promise<ChangedImageEntity[]> {

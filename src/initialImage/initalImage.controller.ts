@@ -2,6 +2,9 @@ import { Body, Controller, Delete, Get, Param, Post, UploadedFile, UseIntercepto
 import { FileInterceptor } from "@nestjs/platform-express";
 import { InitialImageService } from "./initialImage.service";
 import { CreateInitialImageDto } from "src/dto/initialImage-dto";
+import { InitialImageEntity } from "src/entity/initalImage.entity";
+import { getRepository } from "typeorm";
+import PublicFile from "src/entity/publicImage.entity";
 
 @Controller('/initialImage')
 export class InitialImageController {

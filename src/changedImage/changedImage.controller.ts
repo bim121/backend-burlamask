@@ -1,7 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { getRepository } from 'typeorm';
+import { Body, Controller, Delete, Get, Param, Post, Query, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { CreateChangeImageDto } from "src/dto/changedImage-dto";
 import { ChangedImageService } from "./changedImage.service";
+import { ChangedImageEntity } from "src/entity/changedImage.entity";
+import PublicFile from 'src/entity/publicImage.entity';
 
 
 @Controller('/changedImage')
@@ -14,10 +17,12 @@ export class ChangedImageController {
     }
 
     @Get()
-    async getAll(){
-        return this.changedImageServerice.getAll();
+    async getPosts(@Query('search') search: string) {
+    if (search) {
+      return this.changedImageServerice.searchForChangedImage(search);
     }
-
+    return this.changedImageServerice.getAll();
+  }
     @Get(':id')
     async getOne(@Param('id') id: number){
         return this.changedImageServerice.getOne(id);

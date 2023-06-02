@@ -7,6 +7,8 @@ import { ChangedImageEntity } from "src/entity/changedImage.entity";
 import { HttpModule } from "@nestjs/axios";
 import { ChangedImageController } from "./changedImage.controller";
 import { ChangedImageService } from "./changedImage.service";
+import ChangedImageSearchService from "./changedImageSearch.service";
+import { SearchModule } from "src/search/search.module";
 
 @Module({
     imports: [
@@ -25,11 +27,12 @@ import { ChangedImageService } from "./changedImage.service";
               },
             },
           ]),
-        HttpModule
+        HttpModule,
+        SearchModule
     ],
     controllers: [ChangedImageController],
-    providers: [ChangedImageService],
-    exports: [ChangedImageService]
+    providers: [ChangedImageService, ChangedImageSearchService],
+    exports: [ChangedImageService,  ChangedImageSearchService]
 })
 export class ChangedImageModule{
     
