@@ -6,6 +6,7 @@ import { InitialImageEntity } from "src/entity/initalImage.entity";
 import PublicFile from "src/entity/publicImage.entity";
 import { InitialImageController } from "./initalImage.controller";
 import { InitialImageService } from "./initialImage.service";
+import { ChatModule } from "src/Gateway/chat.module";
 
 @Module({
     imports: [
@@ -23,7 +24,8 @@ import { InitialImageService } from "./initialImage.service";
                 },
               },
             },
-          ])
+          ]),
+          ChatModule
     ],
     controllers: [InitialImageController],
     providers: [InitialImageService],

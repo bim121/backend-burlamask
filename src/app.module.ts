@@ -8,6 +8,7 @@ import { ChangedImageModule } from './changedImage/changedImage.module';
 import { SearchModule } from './search/search.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './Auth/auth.module';
+import { ChatModule } from './Gateway/chat.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { AuthModule } from './Auth/auth.module';
         JWT_EXPIRATION_TIME: Joi.string().required(),
       })
     }),
+    ChatModule,
     AuthModule,
     DatabaseModule,
     FilesModule,

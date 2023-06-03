@@ -6,13 +6,15 @@ import { ClientProxy } from "@nestjs/microservices";
 import { InitialImageEntity } from "src/entity/initalImage.entity";
 import { CreateInitialImageDto } from "src/dto/initialImage-dto";
 import { FindDto } from "src/dto/find-dto";
+import { ChatGateway } from "src/Gateway/chat.gateway";
 
 @Injectable()
 export class InitialImageService {
     constructor(
         @InjectRepository(InitialImageEntity)    
         private readonly initialImageRepo: Repository<InitialImageEntity>,
-        @Inject('FILES_SERVICE') private filesService: ClientProxy ) {}
+        @Inject('FILES_SERVICE') private filesService: ClientProxy,
+        private readonly chatGateway: ChatGateway ) {}
 
     async createInitialImage(initialImageDto: CreateInitialImageDto, imageBuffer: Buffer, filename: string): Promise<InitialImageEntity> {    
         const {  description, username } = initialImageDto;
@@ -39,6 +41,8 @@ export class InitialImageService {
             image
         });
         await this.initialImageRepo.save(initialImageObject);
+
+        this.chatGateway.sendInfo("was upload image with description: " + initialImageObject.description + ", by user: " + initialImageObject.username + ", and url: " + image.url);
 
         return await this.initialImageRepo.findOne({
             where: {

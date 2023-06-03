@@ -9,6 +9,7 @@ import { ChangedImageController } from "./changedImage.controller";
 import { ChangedImageService } from "./changedImage.service";
 import ChangedImageSearchService from "./changedImageSearch.service";
 import { SearchModule } from "src/search/search.module";
+import { ChatModule } from "src/Gateway/chat.module";
 
 @Module({
     imports: [
@@ -28,7 +29,8 @@ import { SearchModule } from "src/search/search.module";
             },
           ]),
         HttpModule,
-        SearchModule
+        SearchModule,
+        ChatModule
     ],
     controllers: [ChangedImageController],
     providers: [ChangedImageService, ChangedImageSearchService],

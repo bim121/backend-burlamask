@@ -7,6 +7,7 @@ import { HttpService } from '@nestjs/axios';
 import { CreateChangeImageDto } from '../dto/changedImage-dto';
 import ChangedImageSearchService from "./changedImageSearch.service";
 import { FindDto } from "src/dto/find-dto";
+import { ChatGateway } from "src/Gateway/chat.gateway";
 
 @Injectable()
 export class ChangedImageService {
@@ -15,7 +16,8 @@ export class ChangedImageService {
         private readonly changedImageRepo: Repository<ChangedImageEntity>,
         @Inject('FILES_SERVICE') private filesService: ClientProxy,
         private readonly httpService: HttpService,
-        private changedImageSearchService: ChangedImageSearchService ) {}
+        private changedImageSearchService: ChangedImageSearchService,
+        private readonly chatGateway: ChatGateway ) {}
 
     async createChangedImage(dto: CreateChangeImageDto) {  
         let {descriptionOne, descriptionTwo, faceUrl, bodyUrl, username} = dto;  
@@ -60,6 +62,8 @@ export class ChangedImageService {
             },
         }) 
 
+        this.chatGateway.sendInfo("was created changed image with description: " + object.description + ", by user: " + object.username + ", and url: " + object.image.url);
+
         
         arr.push(object);
 
@@ -87,6 +91,8 @@ export class ChangedImageService {
                 image: true,
             },
         }) 
+
+        this.chatGateway.sendInfo("was created changed image with description: " + object.description + ", by user: " + object.username + ", and url: " + object.image.url);
 
         arr.push(object);
 
