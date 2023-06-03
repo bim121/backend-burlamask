@@ -5,6 +5,7 @@ import { map, catchError, lastValueFrom } from 'rxjs';
 import { ClientProxy } from "@nestjs/microservices";
 import { InitialImageEntity } from "src/entity/initalImage.entity";
 import { CreateInitialImageDto } from "src/dto/initialImage-dto";
+import { FindDto } from "src/dto/find-dto";
 
 @Injectable()
 export class InitialImageService {
@@ -14,9 +15,9 @@ export class InitialImageService {
         @Inject('FILES_SERVICE') private filesService: ClientProxy ) {}
 
     async createInitialImage(initialImageDto: CreateInitialImageDto, imageBuffer: Buffer, filename: string): Promise<InitialImageEntity> {    
-        const {  description } = initialImageDto;
-
-        const initialImageObject: InitialImageEntity = await this.initialImageRepo.create({ description });
+        const {  description, username } = initialImageDto;
+        
+        const initialImageObject: InitialImageEntity = await this.initialImageRepo.create({ description, username });
         await this.initialImageRepo.save(initialImageObject);
 
         const json = JSON.stringify({
@@ -41,7 +42,7 @@ export class InitialImageService {
 
         return await this.initialImageRepo.findOne({
             where: {
-                description
+                id: initialImageObject.id
             },
             relations: {
                 image: true,
@@ -59,5 +60,16 @@ export class InitialImageService {
 
     async delete(id: number): Promise<void> {
         this.initialImageRepo.delete({ id });
+    }
+
+    async getByUsername(find: FindDto) {
+        return await this.initialImageRepo.find({
+            where: {
+                username: find.username
+            },
+            relations: {
+                image: true,
+            },
+        }) 
     }
 }

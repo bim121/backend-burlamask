@@ -6,6 +6,7 @@ import { ChangedImageEntity } from "src/entity/changedImage.entity";
 import { HttpService } from '@nestjs/axios';
 import { CreateChangeImageDto } from '../dto/changedImage-dto';
 import ChangedImageSearchService from "./changedImageSearch.service";
+import { FindDto } from "src/dto/find-dto";
 
 @Injectable()
 export class ChangedImageService {
@@ -17,15 +18,14 @@ export class ChangedImageService {
         private changedImageSearchService: ChangedImageSearchService ) {}
 
     async createChangedImage(dto: CreateChangeImageDto) {  
-        const {descriptionOne, descriptionTwo, faceUrl, bodyUrl} = dto;  
+        let {descriptionOne, descriptionTwo, faceUrl, bodyUrl, username} = dto;  
         const requestBody = { face_url: faceUrl, body_url: bodyUrl };
-        const firstChangedImageObject: ChangedImageEntity = await this.changedImageRepo.create({ description: descriptionOne });
+        const firstChangedImageObject: ChangedImageEntity = await this.changedImageRepo.create({ description: descriptionOne, username });
         await this.changedImageRepo.save(firstChangedImageObject);
         this.changedImageSearchService.indexPost(firstChangedImageObject);
-        const secondChangedImageObject: ChangedImageEntity = await this.changedImageRepo.create({ description: descriptionTwo });
+        const secondChangedImageObject: ChangedImageEntity = await this.changedImageRepo.create({ description: descriptionTwo, username });
         await this.changedImageRepo.save(secondChangedImageObject);
         this.changedImageSearchService.indexPost(secondChangedImageObject);
-
         const arr: ChangedImageEntity[] = [];
 
         const response = await this.httpService.post('http://flask:5000/process_images', requestBody).toPromise();
@@ -46,12 +46,11 @@ export class ChangedImageService {
             throw new HttpException('Bad exception for rabbitmq', HttpStatus.BAD_REQUEST); 
         } 
 
-        await this.changedImageRepo.update(firstChangedImageObject, {
-            ...firstChangedImageObject,
-            image
-        });
-        await this.changedImageRepo.save(firstChangedImageObject);
+        console.log(image)
 
+        firstChangedImageObject.image = image;
+        await this.changedImageRepo.save(firstChangedImageObject);
+        console.log(firstChangedImageObject)
         let object = await this.changedImageRepo.findOne({
             where: {
                 id: firstChangedImageObject.id
@@ -61,6 +60,7 @@ export class ChangedImageService {
             },
         }) 
 
+        
         arr.push(object);
 
         json = JSON.stringify({
@@ -75,10 +75,7 @@ export class ChangedImageService {
             throw new HttpException('Bad exception for rabbitmq', HttpStatus.BAD_REQUEST); 
         } 
 
-        await this.changedImageRepo.update(secondChangedImageObject, {
-            ...secondChangedImageObject,
-            image
-        });
+        secondChangedImageObject.image = image;
 
         await this.changedImageRepo.save(secondChangedImageObject);
 
@@ -117,5 +114,16 @@ export class ChangedImageService {
 
     async delete(id: number): Promise<void> {
         this.changedImageRepo.delete({ id });
+    }
+
+    async getByUsername(find: FindDto) {
+        return await this.changedImageRepo.find({
+            where: {
+                username: find.username
+            },
+            relations: {
+                image: true,
+            },
+        }) 
     }
 }

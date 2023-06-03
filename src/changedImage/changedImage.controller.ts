@@ -5,6 +5,7 @@ import { CreateChangeImageDto } from "src/dto/changedImage-dto";
 import { ChangedImageService } from "./changedImage.service";
 import { ChangedImageEntity } from "src/entity/changedImage.entity";
 import PublicFile from 'src/entity/publicImage.entity';
+import { FindDto } from 'src/dto/find-dto';
 
 
 @Controller('/changedImage')
@@ -28,6 +29,10 @@ export class ChangedImageController {
         return this.changedImageServerice.getOne(id);
     }
 
+    @Post('/username')
+    async getByUsername(@Body() find: FindDto){
+        return this.changedImageServerice.getByUsername(find);
+    }
     @Delete(':id')
     async delete(@Param('id') id: number) {
         return this.changedImageServerice.delete(id);

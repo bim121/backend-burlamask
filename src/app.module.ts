@@ -6,6 +6,8 @@ import { FilesModule } from './file/file.module';
 import { InitialImageModule } from './initialImage/initialImage.module';
 import { ChangedImageModule } from './changedImage/changedImage.module';
 import { SearchModule } from './search/search.module';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './Auth/auth.module';
 
 @Module({
   imports: [
@@ -31,14 +33,18 @@ import { SearchModule } from './search/search.module';
         RABBITMQ_QUEUE_NAME: Joi.string().required(),
         ELASTICSEARCH_NODE: Joi.string().required(),
         ELASTICSEARCH_USERNAME: Joi.string().required(),
-        ELASTICSEARCH_PASSWORD: Joi.string().required()
+        ELASTICSEARCH_PASSWORD: Joi.string().required(),
+        JWT_SECRET: Joi.string().required(),
+        JWT_EXPIRATION_TIME: Joi.string().required(),
       })
     }),
+    AuthModule,
     DatabaseModule,
     FilesModule,
     InitialImageModule,
     ChangedImageModule,
-    SearchModule 
+    SearchModule,
+    UserModule
   ],
   controllers: [],
   providers: [],

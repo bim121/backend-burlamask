@@ -10,6 +10,11 @@ export class ChangedImageEntity {
         unique: false 
     }) 
     description: string;
+    @Column({ 
+      type: 'varchar',  
+      unique: false 
+  }) 
+    username:  string;
     @JoinColumn()
     @OneToOne(
     () => PublicFile,

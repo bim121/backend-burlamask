@@ -5,6 +5,7 @@ import { CreateInitialImageDto } from "src/dto/initialImage-dto";
 import { InitialImageEntity } from "src/entity/initalImage.entity";
 import { getRepository } from "typeorm";
 import PublicFile from "src/entity/publicImage.entity";
+import { FindDto } from "src/dto/find-dto";
 
 @Controller('/initialImage')
 export class InitialImageController {
@@ -29,5 +30,10 @@ export class InitialImageController {
     @Delete(':id')
     async delete(@Param('id') id: number) {
         return this.initialImageServerice.delete(id);
+    }
+
+    @Post('/username')
+    async getByUsername(@Body() find: FindDto){
+        return this.initialImageServerice.getByUsername(find);
     }
 }

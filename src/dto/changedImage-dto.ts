@@ -3,4 +3,5 @@ export class CreateChangeImageDto{
     bodyUrl: string;
     descriptionOne: string;
     descriptionTwo:string;
+    username: string;
 }
